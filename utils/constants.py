@@ -1,0 +1,2 @@
+PATH_DATA = '/home/elnur/Desktop/UCRArchive_2018'
+UNIVARIATE_DATASET_NAMES_2018  = ['ArrowHead', 'Wine', 'OliveOil', 'Car', 'BeetleFly',  'Yoga', 'InlineSkate', 'FaceAll',  'Ham', 'MoteStrain','ProximalPhalanxTW',  'WordSynonyms', 'Lightning7', 'GunPointOldVersusYoung',  'Earthquakes' ]
