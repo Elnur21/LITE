@@ -40,7 +40,7 @@ class LITE:
         self.compile()
 
 
-    def hybird_layer(self, input_tensor, input_channels, kernel_sizes=np.array([[2, 4, 8, 16, 32, 64]])):
+    def hybird_layer(self, input_tensor, input_channels, kernel_sizes=[2, 4, 8, 16, 32, 64]):
         conv_list = []  
 
         for kernel_size in kernel_sizes:
@@ -117,12 +117,14 @@ class LITE:
                     strides=1,
                     padding="same",
                     dilation_rate=1,
-                    activation="relu",
+                    activation="linear",
                     use_bias=False,
                 )(input_layer)
             )
+
+        print(input_layer.shape)
         self.hybird = self.hybird_layer(
-                input_tensor=input_layer, input_channels=input_layer.shape[-1]
+                input_tensor=input_layer, input_channels=input_layer.shape[2]
             )
         conv_list.append(self.hybird)
 
@@ -139,12 +141,18 @@ class LITE:
             if self.use_dilation:
                 dilation_rate = 2 ** (i + 1)
 
-            x = self._fcn_module(
-                input_tensor=input_tensor,
-                kernel_size=self.kernel_size // (2**i),
-                n_filters=self.n_filters,
-                dilation_rate=dilation_rate,
-            )
+            x = tf.keras.layers.SeparableConv1D(
+            filters=self.n_filters,
+            kernel_size=self.kernel_size // (2**i),
+            padding="same",
+            strides=1,
+            dilation_rate=dilation_rate,
+            use_bias=False,
+            )(input_tensor)
+
+            x = tf.keras.layers.BatchNormalization()(x)
+            x = tf.keras.layers.Activation(activation="relu")(x)
+
 
             input_tensor = x
 
