@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from sklearn.preprocessing import OneHotEncoder as OHE
+from tensorflow.keras.utils import to_categorical
 
 
 class LITE:
@@ -122,7 +122,6 @@ class LITE:
                 )(input_layer)
             )
 
-        print(input_layer.shape)
         self.hybird = self.hybird_layer(
                 input_tensor=input_layer, input_channels=input_layer.shape[2]
             )
@@ -182,13 +181,11 @@ class LITE:
         
 
     def fit(self, xtrain, ytrain, xval, yval):
-        ohe = OHE(sparse=False)
-
         ytrain = np.expand_dims(ytrain, axis=1)
-        ytrain = ohe.fit_transform(ytrain)
+        ytrain = to_categorical(ytrain)
 
         yval = np.expand_dims(yval, axis=1)
-        yval = ohe.fit_transform(yval)
+        yval = to_categorical(yval)
 
         hist = self.model.fit(
                 xtrain,
